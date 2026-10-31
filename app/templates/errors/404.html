@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found | Decision Maker{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-20 sm:py-28 text-center space-y-6">
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-amber-50 text-amber-600 border border-amber-200 text-3xl font-black shadow-inner">
+        404
+    </div>
+
+    <div class="space-y-2">
+        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Oops! Page Not Found</h1>
+        <p class="text-slate-600 text-base max-w-md mx-auto">
+            The page or resource you requested could not be located. It might have been moved or the URL might contain a typo.
+        </p>
+    </div>
+
+    <!-- Suggested Actions -->
+    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="{{ url_for('main.index') }}" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center">
+            <i class="fa-solid fa-house mr-2"></i> Back to Home
+        </a>
+        <button onclick="window.openChatWithContext('I got a 404 error.', true)" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm border border-slate-200 transition-all flex items-center justify-center">
+            <i class="fa-solid fa-brain mr-2 text-indigo-600"></i> Ask the Assistant
+        </button>
+        <a href="{{ url_for('main.error_codes') }}" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-600 font-semibold text-sm border border-slate-200 transition-all">
+            Browse Error Codes
+        </a>
+    </div>
+
+    <div class="pt-8 text-xs text-slate-400">
+        Status Code: 404 &bull; Resource Not Located
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}System Health & Observability - Decision Maker{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+        <div>
+            <div class="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 mb-2">
+                <i class="fa-solid fa-heart-pulse"></i>
+                <span>Live Observability Dashboard</span>
+            </div>
+            <h1 class="text-3xl font-black text-slate-900">System Diagnostics</h1>
+            <p class="text-sm text-slate-600 mt-1">Real-time status of backend services, databases, external APIs, and uptime.</p>
+        </div>
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('main.health', format='json') }}" target="_blank" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center">
+                <i class="fa-solid fa-code mr-1.5"></i> View Raw JSON
+            </a>
+            <span class="px-3 py-1.5 rounded-xl text-xs font-bold uppercase {% if report.status == 'HEALTHY' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% else %}bg-rose-100 text-rose-800 border border-rose-300{% endif %}">
+                Status: {{ report.status }} ({{ http_status }})
+            </span>
+        </div>
+    </div>
+
+    <!-- Health Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- 1. SQL Database -->
+        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {% if report.dependencies.sql_database.status == 'UP' %}bg-emerald-100 text-emerald-800{% else %}bg-rose-100 text-rose-800{% endif %}">
+                    {{ report.dependencies.sql_database.status }}
+                </span>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-900 text-base">SQL Database</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Core relational store for FAQs, errors, tickets, and decisions.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl text-xs space-y-1 border border-slate-100">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Engine Type:</span>
+                    <span class="font-bold text-slate-800">{{ report.dependencies.sql_database.type }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Critical Dependency:</span>
+                    <span class="text-rose-600 font-bold">Yes (503 if down)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. MongoDB Atlas -->
+        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {% if report.dependencies.mongodb_atlas.status == 'UP' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                    {{ report.dependencies.mongodb_atlas.status }}
+                </span>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-900 text-base">MongoDB Atlas</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Cloud document store for chat logs and user feedback.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl text-xs space-y-1 border border-slate-100">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Collections:</span>
+                    <span class="font-bold text-slate-800">chat_logs, feedback</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Graceful Mode:</span>
+                    <span class="text-emerald-600 font-bold">Non-blocking offline</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Third-Party Weather API -->
+        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-cloud-sun"></i>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {% if report.dependencies.third_party_weather_api.status == 'UP' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                    {{ report.dependencies.third_party_weather_api.status }}
+                </span>
+            </div>
+            <div>
+                <h3 class="font-bold text-slate-900 text-base">Third-Party Weather API</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Open-Meteo REST service with strict 3s timeout SLA.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl text-xs space-y-1 border border-slate-100">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Current Source:</span>
+                    <span class="font-bold text-slate-800 truncate max-w-[140px]">{{ report.dependencies.third_party_weather_api.source }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Timeout SLA:</span>
+                    <span class="text-indigo-600 font-bold">3.0s hard limit</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Metrics Card -->
+    <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Application Uptime</span>
+            <div class="text-2xl font-black text-slate-900 mt-1">{{ report.uptime }}</div>
+            <span class="text-[11px] text-slate-500">{{ report.uptime_seconds }} seconds since startup</span>
+        </div>
+        <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Server Timestamp</span>
+            <div class="text-sm font-mono font-bold text-slate-800 mt-1">{{ report.timestamp }}</div>
+            <span class="text-[11px] text-slate-500">Coordinated Universal Time (UTC)</span>
+        </div>
+        <div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">HTTP SLA Status</span>
+            <div class="text-2xl font-black {% if http_status == 200 %}text-emerald-600{% else %}text-rose-600{% endif %} mt-1">HTTP {{ http_status }}</div>
+            <span class="text-[11px] text-slate-500">All systems responding</span>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+/* Custom Styling and Animations for Decision Maker */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Coin Flip Animation */
+@keyframes coinFlip {
+    0% { transform: rotateY(0deg) scale(1); }
+    50% { transform: rotateY(900deg) scale(1.2); }
+    100% { transform: rotateY(1800deg) scale(1); }
+}
+
+.anim-coin-flipping {
+    animation: coinFlip 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Dice Shake/Roll Animation */
+@keyframes diceRoll {
+    0% { transform: rotate(0deg) scale(1); }
+    20% { transform: rotate(-30deg) scale(1.15); }
+    40% { transform: rotate(45deg) scale(0.9); }
+    60% { transform: rotate(-25deg) scale(1.1); }
+    80% { transform: rotate(15deg) scale(0.95); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+
+.anim-dice-rolling {
+    animation: diceRoll 0.8s ease-in-out forwards;
+}
+
+/* Chat bubble markdown rendering */
+.chat-markdown strong {
+    font-weight: 700;
+    color: #1e1b4b;
+}
+
+.chat-markdown p {
+    margin-bottom: 0.5rem;
+}
+.chat-markdown p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-markdown ul {
+    list-style-type: disc;
+    margin-left: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Mobile responsive full width for chat */
+@media (max-width: 480px) {
+    #chatPanel {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        border-radius: 0 !important;
+    }
+}

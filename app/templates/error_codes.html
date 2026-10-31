@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}System Error Codes & Troubleshooting - Decision Maker{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-12">
+
+    <!-- Header -->
+    <div class="border-b border-slate-200 pb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <div class="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-100 mb-2">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Diagnostics & Error Dictionary</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">System Error Codes</h1>
+            <p class="text-slate-600 mt-1 text-sm sm:text-base">Comprehensive catalog of all application response codes, root causes, and recommended fixes.</p>
+        </div>
+        <div>
+            <button onclick="window.openChatWithContext('What does error DM-901 mean?')" class="inline-flex items-center px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all">
+                <i class="fa-solid fa-brain mr-2"></i> Ask Assistant to Explain an Error
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Codes Table -->
+    <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Active Error Codes ({{ error_codes|length }})</span>
+            <span class="text-xs text-slate-400">Queried dynamically from SQL database</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+                <thead class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <tr>
+                        <th class="px-6 py-3.5">Code</th>
+                        <th class="px-6 py-3.5">Title</th>
+                        <th class="px-6 py-3.5">Description</th>
+                        <th class="px-6 py-3.5">Suggested Fix</th>
+                        <th class="px-6 py-3.5 text-right">Interactive Test</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                    {% for err in error_codes %}
+                    <tr class="hover:bg-slate-50/70 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap font-mono font-bold text-sm">
+                            <span class="px-2.5 py-1 rounded-md {% if err.code.startswith('5') %}bg-rose-100 text-rose-800 border border-rose-200{% elif err.code.startswith('4') %}bg-amber-100 text-amber-800 border border-amber-200{% else %}bg-indigo-100 text-indigo-800 border border-indigo-200{% endif %}">
+                                {{ err.code }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-slate-900 whitespace-nowrap">
+                            {{ err.title }}
+                        </td>
+                        <td class="px-6 py-4 text-slate-600 min-w-[240px]">
+                            {{ err.description }}
+                        </td>
+                        <td class="px-6 py-4 text-slate-700 min-w-[240px]">
+                            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-xs text-slate-600">
+                                <i class="fa-solid fa-wrench text-indigo-500 mr-1.5"></i>
+                                {{ err.suggested_fix }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right whitespace-nowrap">
+                            {% if err.code == '401' %}
+                            <a href="{{ url_for('main.admin_tickets') }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs font-semibold border border-slate-200 transition-colors inline-block" title="Triggers 401 when visiting admin without token">
+                                Trigger 401 <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
+                            </a>
+                            {% elif err.code == '403' %}
+                            <a href="{{ url_for('main.admin_tickets', token='wrong-token') }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs font-semibold border border-slate-200 transition-colors inline-block" title="Triggers 403 when passing an invalid admin token">
+                                Trigger 403 <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
+                            </a>
+                            {% elif err.code == 'DM-901' %}
+                            <a href="{{ url_for('main.trigger_error', code_name='DM-901') }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold border border-indigo-200 transition-colors inline-block">
+                                Test DM-901 <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('main.trigger_error', code_name=err.code) }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition-colors inline-block">
+                                Trigger {{ err.code }} <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Explanations & Error Trigger Demo Guide -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+            <h3 class="font-bold text-slate-900 text-base flex items-center space-x-2">
+                <i class="fa-solid fa-shield-halved text-indigo-600"></i>
+                <span>Protected Routes & Authentication</span>
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                The administrative ticket console at <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-indigo-600">/admin/tickets</code> is guarded.
+                Visiting without a token responds with <strong>HTTP 401</strong>. Providing an invalid token responds with <strong>HTTP 403</strong>.
+            </p>
+        </div>
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+            <h3 class="font-bold text-slate-900 text-base flex items-center space-x-2">
+                <i class="fa-solid fa-code text-indigo-600"></i>
+                <span>Content-Negotiated Responses</span>
+            </h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                When calling <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-indigo-600">/api/*</code> routes, all errors return clean JSON payloads with error codes and descriptions. Normal browser requests receive tailored HTML error pages.
+            </p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

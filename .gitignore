@@ -1,3 +1,19 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+.envrc
+
+# Databases & local storage
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Logs
+logs/
+*.log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
