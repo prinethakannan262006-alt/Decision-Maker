@@ -114,5 +114,42 @@ class TestRoutes(unittest.TestCase):
         self.assertIn("dependencies", data)
         self.assertEqual(data["dependencies"]["sql_database"]["status"], "UP")
 
+    def test_faqs_api_endpoint(self):
+        response = self.client.get("/api/faqs")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["status"], "success")
+        self.assertGreaterEqual(data["count"], 10)
+        self.assertEqual(len(data["faqs"]), data["count"])
+
+    def test_ticket_full_crud(self):
+        # 1. CREATE (C)
+        create_resp = self.client.post("/api/support/ticket", json={
+            "user_message": "Need clarification on weight formulas",
+            "email": "user@example.com"
+        })
+        self.assertEqual(create_resp.status_code, 201)
+        ticket_id = create_resp.get_json()["ticket"]["id"]
+
+        # 2. READ (R)
+        read_resp = self.client.get(f"/api/support/ticket/{ticket_id}")
+        self.assertEqual(read_resp.status_code, 200)
+        self.assertEqual(read_resp.get_json()["user_message"], "Need clarification on weight formulas")
+
+        # 3. UPDATE (U)
+        update_resp = self.client.put(f"/api/support/ticket/{ticket_id}", json={
+            "status": "In Progress"
+        })
+        self.assertEqual(update_resp.status_code, 200)
+        self.assertEqual(update_resp.get_json()["ticket"]["status"], "In Progress")
+
+        # 4. DELETE (D)
+        del_resp = self.client.delete(f"/api/support/ticket/{ticket_id}")
+        self.assertEqual(del_resp.status_code, 200)
+        
+        # Verify gone
+        not_found_resp = self.client.get(f"/api/support/ticket/{ticket_id}")
+        self.assertEqual(not_found_resp.status_code, 404)
+
 if __name__ == "__main__":
     unittest.main()
