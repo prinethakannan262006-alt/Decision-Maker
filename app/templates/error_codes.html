@@ -8,12 +8,12 @@
     <!-- Header -->
     <div class="border-b border-slate-200 pb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <div class="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-100 mb-2">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>Diagnostics & Error Dictionary</span>
+            <div class="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100 mb-2">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>Troubleshooting Directory</span>
             </div>
-            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">System Error Codes</h1>
-            <p class="text-slate-600 mt-1 text-sm sm:text-base">Comprehensive catalog of all application response codes, root causes, and recommended fixes.</p>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Status &amp; Error Codes Reference</h1>
+            <p class="text-slate-600 mt-1 text-sm sm:text-base">Standard response codes, causes, and step-by-step resolution steps.</p>
         </div>
         <div>
             <button onclick="window.openChatWithContext('What does error DM-901 mean?')" class="inline-flex items-center px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all">
@@ -25,8 +25,8 @@
     <!-- Error Codes Table -->
     <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
         <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Active Error Codes ({{ error_codes|length }})</span>
-            <span class="text-xs text-slate-400">Queried dynamically from SQL database</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Status Code Directory ({{ error_codes|length }})</span>
+            <span class="text-xs text-slate-400">Official Platform Documentation</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -37,7 +37,7 @@
                         <th class="px-6 py-3.5">Title</th>
                         <th class="px-6 py-3.5">Description</th>
                         <th class="px-6 py-3.5">Suggested Fix</th>
-                        <th class="px-6 py-3.5 text-right">Interactive Test</th>
+                        <th class="px-6 py-3.5 text-right">Example Preview</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 bg-white">

@@ -9,11 +9,11 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
             <div class="inline-flex items-center space-x-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 mb-2">
-                <i class="fa-solid fa-heart-pulse"></i>
-                <span>Live Observability Dashboard</span>
+                <i class="fa-solid fa-signal"></i>
+                <span>Real-Time Service Monitor</span>
             </div>
-            <h1 class="text-3xl font-black text-slate-900">System Diagnostics</h1>
-            <p class="text-sm text-slate-600 mt-1">Real-time status of backend services, databases, external APIs, and uptime.</p>
+            <h1 class="text-3xl font-black text-slate-900">System Status &amp; Uptime</h1>
+            <p class="text-sm text-slate-600 mt-1">Live operational status across application services, databases, and third-party integrations.</p>
         </div>
         <div class="flex items-center space-x-3">
             <a href="{{ url_for('main.health', format='json') }}" target="_blank" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center">

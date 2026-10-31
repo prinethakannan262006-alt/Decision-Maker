@@ -40,10 +40,10 @@
                     </span>
                     <span>Weighted Decision Matrix</span>
                 </h2>
-                <p class="text-xs text-slate-500 mt-1">Configure your alternatives, assign criteria weights (1–5), score options (1–10), and view the mathematical winner.</p>
+                <p class="text-xs text-slate-500 mt-1">Define your alternatives, set criteria importance (1–5), score options (1–10), and view the highest ranked choice.</p>
             </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <i class="fa-solid fa-shield-halved mr-1.5"></i> Saved to SQL DB
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Persistent Storage
             </span>
         </div>
 
@@ -127,7 +127,7 @@
                         <div id="winnerScore" class="text-2xl font-black text-white">0 pts</div>
                     </div>
                     <button id="saveDecisionBtn" type="button" class="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-md transition-all flex items-center">
-                        <i class="fa-solid fa-floppy-disk mr-2"></i> Save to SQL Database
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Save to Decision History
                     </button>
                 </div>
             </div>
@@ -230,18 +230,18 @@
     <section id="weather" class="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl shadow-xl p-6 sm:p-8 text-white space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
             <div>
-                <span class="text-xs font-bold uppercase tracking-widest text-blue-300">Third-Party Real-Time Integration</span>
+                <span class="text-xs font-bold uppercase tracking-widest text-blue-300">Live Activity Advisor</span>
                 <h2 class="text-2xl font-black mt-1 flex items-center space-x-2.5">
                     <i class="fa-solid fa-cloud-sun text-amber-300"></i>
                     <span>"Should I Go Outside?" Weather Decision</span>
                 </h2>
                 <p class="text-xs text-blue-200 mt-1">
-                    Powered by Open-Meteo REST API (strict 3-second SLA with automatic resilience fallback).
+                    Real-time atmospheric analysis and comfort scoring for outdoor plans and workouts.
                 </p>
             </div>
             <div class="flex items-center space-x-2">
                 <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 border border-white/20">
-                    Source: {{ weather.source }}
+                    Live Atmospheric Data
                 </span>
             </div>
         </div>
@@ -260,12 +260,12 @@
 
             <div class="md:col-span-2 p-5 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 flex flex-col justify-between space-y-3">
                 <div>
-                    <span class="text-xs uppercase font-bold text-emerald-300">Automated Recommendation</span>
+                    <span class="text-xs uppercase font-bold text-emerald-300">Activity Recommendation</span>
                     <h3 class="text-xl font-black text-white mt-0.5">{{ weather.verdict }}</h3>
                     <p class="text-sm text-blue-100 mt-1 leading-relaxed">{{ weather.recommendation }}</p>
                 </div>
                 <div class="text-[11px] text-blue-300">
-                    * If the weather service times out or is blocked, our local fallback engine automatically serves a safe estimate without disrupting the UI.
+                    Wind speed: {{ weather.windspeed }} km/h &middot; Evaluated automatically based on live meteorological data.
                 </div>
             </div>
         </div>
@@ -283,10 +283,10 @@
                     </span>
                     <span>Saved Decisions History</span>
                 </h2>
-                <p class="text-xs text-slate-500 mt-1">Past decision matrices recorded in PostgreSQL / SQLite.</p>
+                <p class="text-xs text-slate-500 mt-1">Review and reference all previously calculated decision matrix models.</p>
             </div>
             <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
-                {{ recent_decisions|length }} Recent Entries
+                {{ recent_decisions|length }} Saved
             </span>
         </div>
 

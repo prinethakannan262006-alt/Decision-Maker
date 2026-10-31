@@ -103,7 +103,7 @@ class TestRoutes(unittest.TestCase):
         # HTML health
         html_resp = self.client.get("/health")
         self.assertEqual(html_resp.status_code, 200)
-        self.assertIn(b"System Diagnostics", html_resp.data)
+        self.assertIn(b"System Status", html_resp.data)
 
         # JSON health
         json_resp = self.client.get("/health?format=json")

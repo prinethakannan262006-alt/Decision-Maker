@@ -7,22 +7,22 @@
 <section class="relative overflow-hidden bg-gradient-to-b from-indigo-50/60 via-white to-slate-50 pt-16 pb-20 sm:pt-24 sm:pb-28">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <!-- Pill Banner -->
-        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-100/70 border border-indigo-200/80 text-xs font-semibold text-indigo-800 mb-8 animate-fade-in">
+        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 text-xs font-semibold text-indigo-800 mb-8 animate-fade-in">
             <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-            <span>Production-Ready Decision System</span>
-            <span class="text-indigo-400">&bull;</span>
-            <span class="text-indigo-600 font-bold">SQL + MongoDB Atlas + AI</span>
+            <span>Intelligent Decision Support Platform</span>
+            <span class="text-indigo-300">&bull;</span>
+            <span class="text-indigo-600 font-bold">Fast, Objective &amp; Data-Driven</span>
         </div>
 
         <!-- Main Title -->
         <h1 class="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
             Stop Guessing. <br class="hidden sm:inline">
-            Make <span class="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Rational, Confident</span> Choices.
+            Make <span class="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Confident, Rational</span> Choices.
         </h1>
 
         <!-- Subtitle -->
         <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            From complex multi-criteria business trade-offs to lightning-fast 50/50 picks. Backed by mathematical weighting, grounded AI advice, and permanent SQL storage.
+            Evaluate high-stakes career, financial, or personal trade-offs with mathematical precision, or break everyday deadlocks in seconds with quick randomizers.
         </p>
 
         <!-- CTAs -->
@@ -45,19 +45,19 @@
         <div class="mt-14 pt-10 border-t border-slate-200/80 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto text-left">
             <div class="p-4 bg-white rounded-xl shadow-xs border border-slate-100">
                 <div class="text-2xl font-black text-indigo-600">100%</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Objective Weighting</div>
+                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Objective Scoring</div>
             </div>
             <div class="p-4 bg-white rounded-xl shadow-xs border border-slate-100">
-                <div class="text-2xl font-black text-violet-600">{{ faq_count }}+</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">SQL Grounded FAQs</div>
+                <div class="text-2xl font-black text-violet-600">Multi-Factor</div>
+                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Weighted Criteria</div>
             </div>
             <div class="p-4 bg-white rounded-xl shadow-xs border border-slate-100">
-                <div class="text-2xl font-black text-emerald-600">&lt; 3.0s</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Weather & API SLA</div>
+                <div class="text-2xl font-black text-emerald-600">Live Context</div>
+                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Real-Time Insights</div>
             </div>
             <div class="p-4 bg-white rounded-xl shadow-xs border border-slate-100">
                 <div class="text-2xl font-black text-amber-600">{{ saved_decisions_count }}</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Decisions Saved</div>
+                <div class="text-xs font-semibold text-slate-500 uppercase mt-0.5">Decisions Evaluated</div>
             </div>
         </div>
     </div>
@@ -115,13 +115,13 @@
                     <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl mb-5 shadow-md shadow-blue-100">
                         <i class="fa-solid fa-cloud-sun"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900">Outdoor Weather Engine</h3>
+                    <h3 class="text-lg font-bold text-slate-900">Outdoor Activity Advisor</h3>
                     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                        Live real-time weather integration via Open-Meteo with 3s timeout and automatic fallback to advise "Should I go outside today?"
+                        Plan walks, workouts, or travel with automated conditions analysis answering "Should I step outside right now?"
                     </p>
                 </div>
                 <a href="{{ url_for('main.decision_tool') }}#weather" class="mt-6 inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700">
-                    Check Forecast <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
+                    Check Conditions <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
                 </a>
             </div>
 
@@ -131,9 +131,9 @@
                     <div class="w-12 h-12 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xl mb-5 shadow-md shadow-purple-100">
                         <i class="fa-solid fa-brain"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900">Grounded AI Advisor</h3>
+                    <h3 class="text-lg font-bold text-slate-900">AI Decision Advisor</h3>
                     <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-                        Chat advisor strictly grounded in verified database FAQs and error code diagnostics, auto-creating support tickets if questions exceed knowledge.
+                        An interactive assistant that helps brainstorm criteria, resolve complex dilemmas, and answers platform questions.
                     </p>
                 </div>
                 <button onclick="window.openChatWithContext('Hello! Can you help me make a choice?')" class="mt-6 inline-flex items-center text-sm font-semibold text-purple-600 hover:text-purple-700 text-left">
