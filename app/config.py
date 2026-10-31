@@ -12,10 +12,13 @@ class Config:
     """Base application configuration."""
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production-decision-maker-2026")
     
-    # Database URL formatting (Render provides 'postgres://', SQLAlchemy 1.4+ expects 'postgresql://')
+    # Database URL formatting (Render provides 'postgres://', SQLAlchemy 2 expects psycopg2 or psycopg)
     raw_db_url = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'instance' / 'decision_maker.db'}")
-    if raw_db_url and raw_db_url.startswith("postgres://"):
-        raw_db_url = raw_db_url.replace("postgres://", "postgresql://", 1)
+    if raw_db_url:
+        if raw_db_url.startswith("postgres://"):
+            raw_db_url = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif raw_db_url.startswith("postgresql://") and not raw_db_url.startswith("postgresql+"):
+            raw_db_url = raw_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
     SQLALCHEMY_DATABASE_URI = raw_db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
