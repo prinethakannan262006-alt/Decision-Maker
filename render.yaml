@@ -2,13 +2,13 @@ services:
   - type: web
     name: decision-maker
     runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn "app:create_app()"
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: gunicorn decision_maker.wsgi:application
     plan: free
     autoDeploy: true
     envVars:
-      - key: FLASK_ENV
-        value: production
+      - key: DJANGO_SETTINGS_MODULE
+        value: decision_maker.settings
       - key: PYTHON_VERSION
         value: 3.12.10
       - key: SECRET_KEY

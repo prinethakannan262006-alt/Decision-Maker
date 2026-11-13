@@ -1,151 +1,139 @@
 # Decision Maker
 
-> A production-grade, rational choice web application designed to help individuals and teams evaluate alternatives, analyze multi-criteria trade-offs, and make informed choices through mathematical weighting, quick randomizers, and AI-grounded guidance.
+> A production-grade, rational choice web application designed to help individuals and teams evaluate alternatives, analyze multi-criteria trade-offs, and make informed choices through mathematical weighting, quick randomizers, and AI-grounded guidance. Built with **Django 6.x**, **PostgreSQL**, **MongoDB Atlas**, and **Tailwind CSS**.
 
+* **Live Deployment (HTTPS):** [https://decision-maker-prinethakannan.onrender.com](https://decision-maker-prinethakannan.onrender.com)
 * **GitHub Repository:** [https://github.com/prinethakannan262006-alt/decision-maker](https://github.com/prinethakannan262006-alt/decision-maker)
-* **Live Render Deployment:** [https://decision-maker-prinethakannan.onrender.com](https://decision-maker-prinethakannan.onrender.com)
 
 ---
 
-## 1. Overview & Core Features
+## 1. Requirements & Project Checklist Compliance
 
-Decision Maker combines mathematical rigor, randomized picks, and AI intelligence in a unified responsive web suite:
-
-* **Weighted Decision Matrix:**
-  * Define unlimited candidate options and evaluation criteria.
-  * Assign importance weights (scale 1 to 5) to each criterion.
-  * Score each alternative on a granular 1 to 10 scale.
-  * Instant mathematical ranking with weighted score contributions: $\text{Total Score} = \sum (\text{Score}_i \times \text{Weight}_i)$.
-  * Permanent persistence to a relational SQL database with one-click saving.
-* **Quick Picks Randomization:**
-  * **Coin Flip:** Instant 50/50 binary choice with 3D flip animation.
-  * **Dice Roll:** Multi-sided die (6, 12, 20, 100 sides) with physics shake animation.
-  * **Random List Picker:** Custom comma-separated item randomizer.
-* **Outdoor Weather Decision Engine:**
-  * Live integration with Open-Meteo REST API.
-  * Real-time recommendation ("Should I go outside?") based on temperature, precipitation, and conditions.
-  * Built with strict 3-second SLA timeout and automatic resilience fallback.
-* **Grounded AI Decision Advisor:**
-  * Interactive floating chat panel present across every page (including custom 404/500 pages).
-  * Automatically detects and explains system error codes (e.g., 400, 401, 403, 404, 429, 500, 503, DM-901).
-  * Answers questions strictly based on verified database FAQs to prevent hallucinations.
-  * Automatically creates a support ticket in the SQL database if a question exceeds verified knowledge.
-  * Captures thumbs-up and thumbs-down conversational feedback in MongoDB Atlas.
-* **Production Observability & Diagnostics:**
-  * Structured request logging middleware recording HTTP method, path, response status, duration, and client IP into rotating log files (`logs/app.log`) and console.
-  * Live `/health` monitor with dependency checks for SQL database, MongoDB Atlas, and external APIs, returning HTTP 503 if core services fail.
-  * Knowledge Base FAQ accordion with category filters and instant keyword search.
-  * Diagnostics table detailing all 8 application error codes with interactive test triggers.
-  * Support desk with manual ticket submission and tracking by Ticket ID.
+| Requirement / Checklist Item | Implementation Details & Status |
+| :--- | :--- |
+| **1. Live HTTPS site, 3+ pages, mobile-friendly** | Deployed on Render with HTTPS. 5 full responsive pages: Home (`/`), Decision Tool (`/decision-tool`), Knowledge Base (`/faqs`), Error Catalog (`/error-codes`), Support Desk (`/support`), plus Admin Portal (`/admin/tickets`). Tested on mobile viewports. |
+| **2. Chat widget on every page** | Floating AI assistant widget embedded in base template (`templates/base.html`), rendered across all user pages and error views. |
+| **3. 10+ FAQs in SQL, FAQ page from API** | 12 comprehensive FAQs seeded in the relational SQL database (`core_faq`). Dedicated FAQ page (`/faqs`) and REST API (`/api/faqs`) with live category filter and search. |
+| **4. 8+ error codes in SQL** | 8 standard and custom error codes (400, 401, 403, 404, 429, 500, 503, and application-specific `DM-901`) seeded in SQL (`core_errorcode`) with explanations, solutions, and live trigger buttons at `/error-codes`. |
+| **5. Custom 404 & 500 pages with Ask-Assistant button** | Dedicated custom error handlers (`custom_page_not_found_404`, `custom_server_error_500`) with quick-action "Ask the Assistant" buttons that open the chat pre-filled with error diagnostics. |
+| **6. Assistant answers FAQ and explains error codes** | Grounded AI pipeline recognizes error codes in user text and searches database FAQs for exact matches, providing grounded answers and guidance without hallucination. |
+| **7. Ticket created when unsure (Full CRUD)** | When the AI assistant cannot answer with confidence, it automatically generates a persistent support ticket with tracking ID (`TICK-XXXXXXXX`). Full CRUD REST API supported at `/api/support/ticket/<id>`. |
+| **8. Chats and feedback stored in MongoDB** | MongoDB Atlas stores asynchronous chat logs (`chat_logs`) and thumbs-up/down ratings (`feedback`) with non-blocking, graceful offline fallback if disconnected. |
+| **9. Keys in env vars, no secrets in GitHub** | All credentials (`SECRET_KEY`, `DATABASE_URL`, `MONGO_URI`, `GEMINI_API_KEY`, `ADMIN_TOKEN`) are managed through environment variables and `.env` (git-ignored). Secret scanning verified clean. |
+| **10. Request logs + health check** | Custom `RequestLoggingMiddleware` logs method, path, response status, duration (ms), and IP to `logs/app.log`. Live `/health` monitor checks SQL, MongoDB, and external API connectivity. |
+| **11. Extra third-party call with timeout and fallback** | Outdoor Decision Engine calls Open-Meteo REST API (`core/services/weather_service.py`) with a strict 3-second SLA timeout and deterministic fallback for offline resilience. |
+| **12. README with live address & improvement** | Live URL, comprehensive architecture overview, local development instructions, and proposed improvement documented below. |
 
 ---
 
-## 2. Technology Stack
+## 2. Core Features & User Workflow
 
-* **Backend:** Python 3.12, Flask 3.1, Flask-SQLAlchemy 3.1, Flask-Limiter 3.8, Gunicorn 23.0
-* **Frontend:** Responsive Mobile-First HTML5, Tailwind CSS (via CDN), Custom CSS animations, Vanilla JavaScript (ES6+)
-* **SQL Database:** SQLite for local development; PostgreSQL in Render production (ORM powered by SQLAlchemy)
-* **NoSQL Database:** MongoDB Atlas via PyMongo for non-blocking conversational logs (`chat_logs`) and feedback ratings (`feedback`)
-* **AI Architecture:** LLM service integration (Google Gemini / Anthropic Claude REST API) with intelligent local FAQ fallback engine
-* **Observability:** Rotating file logger (5MB cap, 5 backups), request timing middleware, live `/health` endpoint
+1. **Weighted Decision Matrix (`/decision-tool`):**
+   * Dynamically add alternatives and evaluation criteria.
+   * Adjust weights (scale 1 to 5) and assign scores (scale 1 to 10).
+   * Computes mathematical ranking: $\text{Total Score} = \sum (\text{Score}_i \times \text{Weight}_i)$.
+   * One-click save to the SQL database with timestamped history.
+2. **Quick Picks Randomization:**
+   * **Coin Flip:** 3D coin animation for 50/50 binary choices.
+   * **Dice Roll:** Multi-sided die (6, 12, 20, 100 sides) with physics shake animation.
+   * **Random Choice:** Random selection from comma-separated custom inputs.
+3. **Outdoor Weather Decision Engine:**
+   * Fetches real-time weather data from Open-Meteo API.
+   * Evaluates temperature, precipitation, and conditions to deliver an outdoor decision with fallback.
+4. **Grounded AI Decision Advisor:**
+   * Embedded floating chat on every page.
+   * Diagnoses HTTP and app errors (400, 401, 403, 404, 429, 500, 503, DM-901).
+   * Queries verified FAQ knowledge base.
+   * Auto-creates support tickets with unique IDs (`TICK-XXXXXXXX`) when queries exceed verified knowledge.
+5. **Support Desk & Admin Portal:**
+   * `/support`: Submit tickets or search ticket status by ID.
+   * `/admin/tickets`: Secure administrative ticket portal protected by `ADMIN_TOKEN` (HTTP 401 if missing, HTTP 403 if invalid).
+6. **Live System Health Monitor (`/health`):**
+   * Accessible in browser as an HTML dashboard and via curl as JSON (`Accept: application/json`).
+   * Probes database readiness, MongoDB status, weather API response time, and uptime.
 
 ---
 
-## 3. Environment Variables
+## 3. Technology Stack
 
-All configuration is safely loaded through environment variables. **Never commit actual secret values into git.**
+* **Backend Framework:** Python 3.12, **Django 6.1**, Gunicorn 23.0, WhiteNoise 6.12
+* **Database (SQL):** SQLite (local development) / PostgreSQL (production on Render via `dj-database-url` and `psycopg[binary]`)
+* **Database (NoSQL):** MongoDB Atlas via PyMongo (`chat_logs` and `feedback` collections)
+* **Frontend:** Responsive HTML5, Tailwind CSS, FontAwesome 6, Vanilla JavaScript (ES6+)
+* **Testing:** Django Test Suite (`python manage.py test core`) covering all 20 test suites
 
-| Variable Name | Description | Example / Default |
+---
+
+## 4. Environment Variables
+
+All settings load from environment variables (`.env` locally, Render Dashboard in production):
+
+| Variable Name | Description | Default / Example |
 | :--- | :--- | :--- |
-| `FLASK_ENV` | Environment mode (`development` or `production`) | `production` |
-| `SECRET_KEY` | Cryptographic secret for session security | Random 32+ character string |
-| `DATABASE_URL` | Relational SQL database URI (SQLite locally, PostgreSQL on Render) | `sqlite:///instance/decision_maker.db` |
-| `MONGO_URI` | MongoDB Atlas connection string for chat logs & feedback | `mongodb+srv://...` (Optional, fails gracefully) |
-| `GEMINI_API_KEY` | Google Gemini API key for assistant reasoning | Optional (Built-in FAQ fallback used if absent) |
-| `ANTHROPIC_API_KEY` | Anthropic Claude API key for assistant reasoning | Optional |
-| `ADMIN_TOKEN` | Bearer token for protected `/admin/tickets` access | Secret admin token string |
+| `SECRET_KEY` | Django security key | Generated random string |
+| `DATABASE_URL` | PostgreSQL or SQLite connection string | `sqlite:///db.sqlite3` |
+| `MONGO_URI` | MongoDB Atlas URI for chat logs & feedback | `mongodb+srv://...` (Optional, fails gracefully) |
+| `GEMINI_API_KEY` | Google Gemini API key for assistant reasoning | Optional (Grounded FAQ fallback used if empty) |
+| `ADMIN_TOKEN` | Bearer token for protected `/admin/tickets` | Secret token string |
+| `DEBUG` | Django debug toggle (`True` / `False`) | `False` |
 
 ---
 
-## 4. Local Development Setup
+## 5. Local Setup & Testing
 
-### Prerequisites
-* Python 3.11+ (Python 3.12 recommended)
-* Git
+### 1. Clone & create virtual environment
+```bash
+git clone https://github.com/prinethakannan262006-alt/decision-maker.git
+cd decision-maker
 
-### Step-by-Step Installation
+# Windows
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/prinethakannan262006-alt/decision-maker.git
-   cd decision-maker
-   ```
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+```
 
-2. **Create and activate a virtual environment:**
-   ```bash
-   # Windows (PowerShell)
-   python -m venv venv
-   .\venv\Scripts\Activate.ps1
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-   # macOS / Linux
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+### 3. Run database migrations
+```bash
+python manage.py migrate
+```
 
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 4. Execute test suite
+```bash
+python manage.py test core
+```
+*(All 20 unit and integration tests will run and pass).*
 
-4. **Configure environment variables:**
-   ```bash
-   cp .env.example .env
-   # Edit .env to adjust any optional keys if desired
-   ```
-
-5. **Run test suite:**
-   ```bash
-   python -m unittest discover -s tests -p "test_*.py"
-   ```
-
-6. **Start local development server:**
-   ```bash
-   python app.py
-   ```
-   Open your browser at `http://localhost:5000`.
+### 5. Run the development server
+```bash
+python manage.py runserver 5000
+```
+Open `http://localhost:5000` in your browser.
 
 ---
 
-## 5. Render Deployment Guide
+## 6. Render Deployment
 
-### Option A: Automatic Blueprint Deployment (Recommended)
-1. Log in to [Render Dashboard](https://dashboard.render.com).
-2. Click **New +** -> **Blueprint**.
-3. Connect your GitHub repository: `prinethakannan262006-alt/decision-maker`.
-4. Render will parse `render.yaml` and provision both:
-   * **Web Service:** `decision-maker` (runtime Python 3.12, command `gunicorn "app:create_app()"`)
-   * **PostgreSQL Database:** `decision-maker-db`
-5. Under Environment Variables for the Web Service, add:
-   * `MONGO_URI`: Your MongoDB Atlas connection URI (optional).
-   * `GEMINI_API_KEY`: Your Gemini API key (optional).
-   * `ADMIN_TOKEN`: A secret token for the admin ticket console.
-6. Click **Apply**. Database tables and initial FAQs/Error Codes will be automatically created and safely seeded on initial start.
+The repository includes a ready-to-use `render.yaml` blueprint:
 
-### Option B: Manual Web Service Setup
-1. In Render, select **New +** -> **Web Service**.
-2. Connect `prinethakannan262006-alt/decision-maker`.
-3. Set **Runtime** to `Python 3`.
-4. Set **Build Command** to `pip install -r requirements.txt`.
-5. Set **Start Command** to `gunicorn "app:create_app()"`.
-6. Add environment variables:
-   * `FLASK_ENV=production`
-   * `PYTHON_VERSION=3.12.10`
-   * `SECRET_KEY` (use "Generate")
-   * `DATABASE_URL` (link to your Render PostgreSQL instance)
-7. Deploy the service.
+* **Build Command:**
+  ```bash
+  pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+  ```
+* **Start Command:**
+  ```bash
+  gunicorn decision_maker.wsgi:application
+  ```
 
 ---
 
-## 6. Proposed Future Improvement
+## 7. Proposed Future Improvement
 
 * **Export Decision Reports to PDF/CSV:** Enable users to export their weighted decision breakdown, criteria contributions, and ranking summary as downloadable branded PDF or CSV reports for stakeholder meetings and offline archival.
